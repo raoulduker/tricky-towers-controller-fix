@@ -100,7 +100,7 @@ class PatcherApp:
             self.restore_btn.config(state="normal")
             messagebox.showinfo(
                 "Success",
-                "Patch applied!\n\nNow enable Steam Input:\nSteam → Tricky Towers → Properties → Controller"
+                "Patch applied!\n\nNow enable Steam Input:\nSteam -> Tricky Towers -> Properties -> Controller"
             )
         else:
             self.status.config(text="Patch failed", fg="red")
