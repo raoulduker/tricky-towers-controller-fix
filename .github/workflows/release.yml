@@ -36,10 +36,9 @@ jobs:
           brew install create-dmg
           create-dmg \
             --volname "Tricky Towers Controller Patch" \
-            --window-size 400 300 \
+            --window-size 300 200 \
             --icon-size 100 \
-            --icon "Tricky Towers Controller Patch.app" 100 150 \
-            --app-drop-link 300 150 \
+            --icon "Tricky Towers Controller Patch.app" 150 100 \
             "TrickyTowersPatch.dmg" \
             "dist/Tricky Towers Controller Patch.app"
 
