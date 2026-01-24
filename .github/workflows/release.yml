@@ -1,0 +1,54 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install PyInstaller
+        run: pip install pyinstaller
+
+      - name: Build app
+        run: |
+          pyinstaller --onefile --windowed \
+            --name "Tricky Towers Controller Patch" \
+            --add-data "patch.py:." \
+            patch_gui.py
+
+      - name: Create DMG
+        run: |
+          brew install create-dmg
+          create-dmg \
+            --volname "Tricky Towers Controller Patch" \
+            --window-size 400 300 \
+            --icon-size 100 \
+            --icon "Tricky Towers Controller Patch.app" 100 150 \
+            --app-drop-link 300 150 \
+            "TrickyTowersPatch.dmg" \
+            "dist/Tricky Towers Controller Patch.app"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TrickyTowersPatch-macOS
+          path: TrickyTowersPatch.dmg
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: TrickyTowersPatch.dmg
+          generate_release_notes: true
