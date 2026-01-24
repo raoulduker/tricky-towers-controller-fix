@@ -42,15 +42,22 @@ jobs:
             "TrickyTowersPatch.dmg" \
             "dist/Tricky Towers Controller Patch.app"
 
+      - name: Create ZIP
+        run: |
+          cp release-files/INSTALL.txt .
+          zip TrickyTowersPatch.zip TrickyTowersPatch.dmg INSTALL.txt
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: TrickyTowersPatch-macOS
-          path: TrickyTowersPatch.dmg
+          path: TrickyTowersPatch.zip
 
       - name: Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: TrickyTowersPatch.dmg
+          files: |
+            TrickyTowersPatch.dmg
+            TrickyTowersPatch.zip
           generate_release_notes: true
