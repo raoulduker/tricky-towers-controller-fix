@@ -19,16 +19,19 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: '3.9'
 
       - name: Install PyInstaller
         run: pip install pyinstaller
 
       - name: Build app
+        env:
+          MACOSX_DEPLOYMENT_TARGET: '10.9'
         run: |
           pyinstaller --onefile --windowed \
             --name "Tricky Towers Controller Patch" \
             --add-data "patch.py:." \
+            --target-arch universal2 \
             patch_gui.py
 
       - name: Create DMG
