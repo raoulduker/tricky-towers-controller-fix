@@ -5,7 +5,7 @@
 # Names ending with "on Mac" are macOS-specific profiles.
 
 ## Mac-specific controller names (for patching):
-
+```il
 Afterglow Prismatic Xbox One Controller on Mac
 Air Flo Wired PS3 Controller on Mac
 BETAOP Controller on Mac
@@ -70,8 +70,11 @@ Trust Predator Joystick on Mac
 XBox 360 Controller on Mac
 iBuffalo Classic Controller on Mac
 
+```
+
 ## Generic controller names (cross-platform):
 
+```il
 Microsoft Wireless 360 Controller
 Microsoft Xbox 360 Controller
 Microsoft Xbox Controller
@@ -93,10 +96,13 @@ Unknown Controller
 Unknown Gamepad
 Generic Controller
 Generic Gamepad
+```
 
 ## Regex pattern found:
 
+```il
 360|xbox|catz
+```
 
 ## Notes:
 
