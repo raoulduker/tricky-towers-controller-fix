@@ -3,11 +3,34 @@
 Tricky Towers Steam Input Patch - GUI
 """
 
+import subprocess
 from pathlib import Path
 from tkinter import Tk, Label, Button, Frame, filedialog, messagebox
 from tkinter.font import Font
+from typing import Optional
 
 from patch import patch_dll, restore_dll
+
+
+def get_app_path(dll_path: Path) -> Optional[Path]:
+    """Get .app bundle path from DLL path."""
+    for parent in dll_path.parents:
+        if parent.suffix == ".app":
+            return parent
+    return None
+
+
+def codesign_app(app_path: Path) -> bool:
+    """Ad-hoc codesign the app bundle."""
+    try:
+        subprocess.run(
+            ["codesign", "--force", "--deep", "--sign", "-", str(app_path)],
+            check=True,
+            capture_output=True,
+        )
+        return True
+    except subprocess.CalledProcessError:
+        return False
 
 STEAM_APP = (
     Path.home() / "Library" / "Application Support" / "Steam" / "steamapps" / "common"
@@ -22,7 +45,7 @@ class PatcherApp:
         self.root.title("Tricky Towers Controller Patch")
         self.root.resizable(False, False)
 
-        self.dll_path: Path | None = None
+        self.dll_path: Optional[Path] = None
         self.setup_ui()
         self.check_steam()
 
@@ -51,6 +74,9 @@ class PatcherApp:
 
         self.restore_btn = Button(btn_frame, text="Restore", width=10, command=self.do_restore, state="disabled")
         self.restore_btn.pack(side="left", padx=5)
+
+        self.codesign_btn = Button(btn_frame, text="Codesign", width=10, command=self.do_codesign, state="disabled")
+        self.codesign_btn.pack(side="left", padx=5)
 
         Button(self.root, text="Select Different App...", command=self.browse).pack(pady=5)
 
@@ -83,6 +109,7 @@ class PatcherApp:
         self.dll_path = path
         self.path_label.config(text=str(path.parent))
         self.patch_btn.config(state="normal")
+        self.codesign_btn.config(state="normal")
 
         backup = path.with_suffix(".dll.bak")
         if backup.exists():
@@ -115,6 +142,20 @@ class PatcherApp:
         else:
             self.status.config(text="Restore failed", fg="red")
             messagebox.showerror("Error", "No backup found")
+
+    def do_codesign(self):
+        if not self.dll_path:
+            return
+        app_path = get_app_path(self.dll_path)
+        if not app_path:
+            messagebox.showerror("Error", "Could not find .app bundle")
+            return
+        if codesign_app(app_path):
+            self.status.config(text="Codesigned!", fg="green")
+            messagebox.showinfo("Success", f"App signed:\n{app_path.name}")
+        else:
+            self.status.config(text="Codesign failed", fg="red")
+            messagebox.showerror("Error", "Codesign failed")
 
     def run(self):
         self.root.mainloop()

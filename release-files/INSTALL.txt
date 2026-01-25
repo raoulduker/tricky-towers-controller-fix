@@ -8,4 +8,6 @@ Tricky Towers Controller Patch (macOS)
 
 To restore original: run the app again and click "Restore"
 
+Note: If the game won't launch after patching, click "Codesign" to re-sign the app.
+
 More info: https://github.com/fr-eed/tricky-towers-controller-fix
